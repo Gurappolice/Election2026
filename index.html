@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gurap PS Election Command Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <style>
+        body, html { padding: 0; margin: 0; height: 100%; width: 100%; font-family: sans-serif; }
+        #map { height: 100vh; width: 100vw; }
+        .leaflet-popup-content { font-size: 14px; line-height: 1.5; }
+        .leaflet-popup-content a { color: #0066cc; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-omnivore/0.3.4/leaflet-omnivore.min.js"></script>
+
+    <script>
+        // 1. Initialize the map (Centered roughly on Gurap)
+        var map = L.map('map').setView([23.03, 88.11], 12);
+
+        // 2. Load Live Google Satellite Hybrid Map as the background
+        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            attribution: '© Google Maps'
+        }).addTo(map);
+
+        // 3. Define how the Popups should look when a pin is clicked
+        var customLayer = L.geoJson(null, {
+            onEachFeature: function(feature, layer) {
+                if (feature.properties && feature.properties.description) {
+                    // This pulls the phone numbers and navigation links directly from our KML file
+                    layer.bindPopup("<b>" + feature.properties.name + "</b><br><br>" + feature.properties.description);
+                } else if (feature.properties && feature.properties.name) {
+                    layer.bindPopup("<b>" + feature.properties.name + "</b>");
+                }
+            }
+        });
+
+        // 4. Load the KML file into the map
+        // IMPORTANT: The KML file must be named exactly "Gurap_Master_Area.kml"
+        var runLayer = omnivore.kml('Gurap_Master_Area.kml', null, customLayer)
+            .on('ready', function() {
+                // Automatically zoom to fit the whole jurisdiction when the map loads
+                map.fitBounds(runLayer.getBounds());
+            })
+            .addTo(map);
+    </script>
+
+</body>
+</html>
