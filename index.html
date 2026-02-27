@@ -24,7 +24,7 @@
         var map = L.map('map').setView([23.03, 88.11], 12);
 
         // 2. Load Live Google Satellite Hybrid Map as the background
-        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
             maxZoom: 20,
             attribution: '© Google Maps'
         }).addTo(map);
@@ -52,4 +52,5 @@
     </script>
 
 </body>
+
 </html>
